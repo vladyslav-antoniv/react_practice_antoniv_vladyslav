@@ -48,9 +48,10 @@ export const App = () => {
 
               {usersFromServer.map(user => (
                 <a
+                  key={user.id}
                   data-cy="FilterUser"
                   href="#/"
-                  onClick={setSelectedUser(user.id)}
+                  onClick={() => setSelectedUser(user.id)}
                   className={cn({ 'is-active': selectedUser === user.id })}
                 >
                   {user.name}
@@ -128,6 +129,8 @@ export const App = () => {
           </nav>
         </div>
 
+        {/* table */}
+
         <div className="box table-container">
           <p data-cy="NoMatchingMessage">
             No products matching selected criteria
@@ -186,44 +189,30 @@ export const App = () => {
             </thead>
 
             <tbody>
-              <tr data-cy="Product">
-                <td className="has-text-weight-bold" data-cy="ProductId">
-                  1
-                </td>
+              {userProdacts.map(product => (
+                <tr key={product.id} data-cy="Product">
+                  <td className="has-text-weight-bold" data-cy="ProductId">
+                    {product.id}
+                  </td>
 
-                <td data-cy="ProductName">Milk</td>
-                <td data-cy="ProductCategory">🍺 - Drinks</td>
+                  <td data-cy="ProductName">{product.name}</td>
+                  <td data-cy="ProductCategory">
+                    {product.category
+                      ? `${product.category.icon} - ${product.category.title}`
+                      : '-'}
+                  </td>
 
-                <td data-cy="ProductUser" className="has-text-link">
-                  Max
-                </td>
-              </tr>
-
-              <tr data-cy="Product">
-                <td className="has-text-weight-bold" data-cy="ProductId">
-                  2
-                </td>
-
-                <td data-cy="ProductName">Bread</td>
-                <td data-cy="ProductCategory">🍞 - Grocery</td>
-
-                <td data-cy="ProductUser" className="has-text-danger">
-                  Anna
-                </td>
-              </tr>
-
-              <tr data-cy="Product">
-                <td className="has-text-weight-bold" data-cy="ProductId">
-                  3
-                </td>
-
-                <td data-cy="ProductName">iPhone</td>
-                <td data-cy="ProductCategory">💻 - Electronics</td>
-
-                <td data-cy="ProductUser" className="has-text-link">
-                  Roma
-                </td>
-              </tr>
+                  <td
+                    data-cy="ProductUser"
+                    className={cn({
+                      'has-text-link': product.user.sex === 'm',
+                      'has-text-danger': product.user.sex === 'f',
+                    })}
+                  >
+                    {product.user.name}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
