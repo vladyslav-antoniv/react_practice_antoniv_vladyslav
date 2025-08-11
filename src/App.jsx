@@ -6,6 +6,7 @@ import cn from 'classnames';
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
+import { use } from 'react';
 
 const products = productsFromServer.map(product => {
   const category = categoriesFromServer.find(
@@ -22,10 +23,22 @@ const products = productsFromServer.map(product => {
 
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
+  const [qvery, setQvery] = useState('');
 
-  const userProdacts = selectedUser
-    ? products.filter(product => product.user.id === selectedUser)
-    : products;
+  const userProdacts = products.filter(product => {
+    if (selectedUser && product.user.id !== selectedUser) {
+      return false;
+    }
+
+    if (
+      qvery.trim() !== '' &&
+      !product.name.toLowerCase().includes(qvery.toLowerCase())
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <div className="section">
@@ -40,7 +53,7 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
-                onClick={setSelectedUser(null)}
+                onClick={() => setSelectedUser(null)}
                 className={cn({ 'is-active': !selectedUser })}
               >
                 All
@@ -59,6 +72,8 @@ export const App = () => {
               ))}
             </p>
 
+            {/* imput */}
+
             <div className="panel-block">
               <p className="control has-icons-left has-icons-right">
                 <input
@@ -66,21 +81,25 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={qvery}
+                  onChange={something => setQvery(something.target.value)}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {qvery && (
+                  <span className="icon is-right">
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setQvery('')}
+                    />
+                  </span>
+                )}
               </p>
             </div>
 
