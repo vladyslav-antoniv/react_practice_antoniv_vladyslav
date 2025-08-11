@@ -24,8 +24,9 @@ const products = productsFromServer.map(product => {
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [qvery, setQvery] = useState('');
+  const [categorySearch, setCategorySearch] = useState(null);
 
-  const userProdacts = products.filter(product => {
+  const tableProdacts = products.filter(product => {
     if (selectedUser && product.user.id !== selectedUser) {
       return false;
     }
@@ -34,6 +35,10 @@ export const App = () => {
       qvery.trim() !== '' &&
       !product.name.toLowerCase().includes(qvery.toLowerCase())
     ) {
+      return false;
+    }
+
+    if (categorySearch && categorySearch !== product.category.id) {
       return false;
     }
 
@@ -103,37 +108,35 @@ export const App = () => {
               </p>
             </div>
 
+            {/* categoryes */}
+
             <div className="panel-block is-flex-wrap-wrap">
               <a
                 href="#/"
                 data-cy="AllCategories"
-                className="button is-success mr-6 is-outlined"
+                className={cn(
+                  { 'is-info': !categorySearch },
+                  'button mr-2 my-1',
+                )}
+                onClick={() => setCategorySearch(null)}
               >
                 All
               </a>
 
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 1
-              </a>
-
-              <a data-cy="Category" className="button mr-2 my-1" href="#/">
-                Category 2
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 3
-              </a>
-              <a data-cy="Category" className="button mr-2 my-1" href="#/">
-                Category 4
-              </a>
+              {categoriesFromServer.map(category => (
+                <a
+                  key={category.id}
+                  data-cy="Category"
+                  className={cn(
+                    { 'is-info': categorySearch === category.id },
+                    'button mr-2 my-1',
+                  )}
+                  onClick={() => setCategorySearch(category.id)}
+                  href="#/"
+                >
+                  {category.title}
+                </a>
+              ))}
             </div>
 
             <div className="panel-block">
@@ -208,7 +211,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {userProdacts.map(product => (
+              {tableProdacts.map(product => (
                 <tr key={product.id} data-cy="Product">
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {product.id}
