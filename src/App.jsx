@@ -6,7 +6,6 @@ import cn from 'classnames';
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
-import { use } from 'react';
 
 const products = productsFromServer.map(product => {
   const category = categoriesFromServer.find(
@@ -25,8 +24,13 @@ export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [qvery, setQvery] = useState('');
   const [categorySearch, setCategorySearch] = useState(null);
+  const [resetAll, setResetAll] = useState(null);
 
   const tableProdacts = products.filter(product => {
+    if (resetAll) {
+      return true;
+    }
+
     if (selectedUser && product.user.id !== selectedUser) {
       return false;
     }
@@ -144,6 +148,7 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={() => setResetAll('reset')}
               >
                 Reset all filters
               </a>
