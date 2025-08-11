@@ -21,7 +21,12 @@ const products = productsFromServer.map(product => {
 });
 
 export const App = () => {
-  const 
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const userProdacts = selectedUser
+    ? products.filter(product => product.user.id === selectedUser)
+    : products;
+
   return (
     <div className="section">
       <div className="container">
@@ -32,21 +37,25 @@ export const App = () => {
             <p className="panel-heading">Filters</p>
 
             <p className="panel-tabs has-text-weight-bold">
-              <a data-cy="FilterAllUsers" href="#/">
+              <a
+                data-cy="FilterAllUsers"
+                href="#/"
+                onClick={setSelectedUser(null)}
+                className={cn({ 'is-active': !selectedUser })}
+              >
                 All
               </a>
 
-              <a data-cy="FilterUser" href="#/">
-                User 1
-              </a>
-
-              <a data-cy="FilterUser" href="#/" className="is-active">
-                User 2
-              </a>
-
-              <a data-cy="FilterUser" href="#/">
-                User 3
-              </a>
+              {usersFromServer.map(user => (
+                <a
+                  data-cy="FilterUser"
+                  href="#/"
+                  onClick={setSelectedUser(user.id)}
+                  className={cn({ 'is-active': selectedUser === user.id })}
+                >
+                  {user.name}
+                </a>
+              ))}
             </p>
 
             <div className="panel-block">
